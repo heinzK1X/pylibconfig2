@@ -1,10 +1,13 @@
-#TODO: license here?
-# TODO include directives
+"""
+Parsing module of pylibconfig2.
+Knowledge on pyparsing and libconfig required =)
+"""
 
 from pyparsing import alphas, alphanums, cppStyleComment, Combine, Group, \
-    Forward, hexnums, ParseFatalException, pythonStyleComment, oneOf, \
-    OneOrMore, Optional, QuotedString, Suppress, Word, ZeroOrMore
-from types import ConfArray, ConfError, ConfGroup, ConfList, Config
+    Forward, hexnums, ParseException, ParseFatalException, pythonStyleComment, \
+    oneOf, OneOrMore, Optional, QuotedString, Suppress, Word, ZeroOrMore, \
+    stringStart, stringEnd
+from conf_types import ConfArray, ConfError, ConfGroup, ConfList
 from ast import literal_eval
 
 assign = Suppress(oneOf(": ="))
@@ -85,7 +88,7 @@ val_group = (
 
 value << (val_group | val_list | val_array | val_scalar)("value")
 setting << Group(name + assign + value + delim)
-config = ZeroOrMore(setting)\
+config = (stringStart + ZeroOrMore(setting) + stringEnd)\
     .ignore(cppStyleComment)\
     .ignore(pythonStyleComment)\
     .setParseAction(convert_group)
