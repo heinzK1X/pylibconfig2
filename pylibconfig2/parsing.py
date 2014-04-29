@@ -56,11 +56,6 @@ def convert_group(tokens):
         raise ParseFatalException("Names in group must be unique: %s" % tokens)
     return ConfGroup(dic)
 
-
-def convert_config(tokens):
-    res = convert_group(tokens)
-    return Config(res.__dict__)
-
 # scalar values
 val_bool = Word("TRUEFALStruefals")\
     .setParseAction(convert_bool)
@@ -93,5 +88,5 @@ setting << Group(name + assign + value + delim)
 config = ZeroOrMore(setting)\
     .ignore(cppStyleComment)\
     .ignore(pythonStyleComment)\
-    .setParseAction(convert_config)
+    .setParseAction(convert_group)
 

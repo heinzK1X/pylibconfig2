@@ -106,14 +106,6 @@ class ConfGroup(object):
         ) + "\n}"
 
 
-class Config(ConfGroup):
-    def __repr__(self):
-        return "\n".join(
-            "%s = %s;" % (k, _format_string(v))
-            for k, v in self.__dict__.iteritems()
-        ).replace("\n  ", "\n")  # fix wrong indentation for grouped types
-
-
 _scalar_types = str, int, long, float, bool
 _all_types = _scalar_types + (ConfGroup, ConfList, ConfArray)
 
@@ -137,3 +129,14 @@ def _format_string(obj):
         return repr(obj).replace("\n", "\n  ")
 
 
+from parsing import config
+class Config(ConfGroup):
+    def __init__(self, string):
+        res = config.parseString(string)[0]
+        super(Config, self).__init__(res.__dict__)
+
+    def __repr__(self):
+        return "\n".join(
+            "%s = %s;" % (k, _format_string(v))
+            for k, v in self.__dict__.iteritems()
+        ).replace("\n  ", "\n")  # fix wrong indentation for grouped types
