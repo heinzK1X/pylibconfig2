@@ -12,7 +12,7 @@ setup(
     keywords="libconfig libconfig++ pylibconfig2 pylibconfig config",
     packages=['pylibconfig2', ],
     license='GPLv3',
-    long_description=open('README.md').read(),
+    long_description=open('README.rst').read(),
     test_suite="pylibconfig2.test.test.suite",
 )
 
