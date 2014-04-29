@@ -13,6 +13,6 @@ setup(
     packages=['pylibconfig2', ],
     license='GPLv3',
     long_description=open('README.md').read(),
-    #test_suite="tests",
+    test_suite="pylibconfig2.test.test.suite",
 )
 
