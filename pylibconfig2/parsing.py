@@ -20,7 +20,7 @@ def convert_bool(tokens):
     t = tokens[0].lower()
     vals = {"true": True, "false": False}
     if not t in vals:
-        raise ParseFatalException("bool incorrect: %s"%tokens[0])
+        raise ParseFatalException("bool incorrect: %s" % tokens[0])
     else:
         return vals[t]
 
@@ -28,8 +28,8 @@ def convert_bool(tokens):
 def convert_num(tokens):
     try:
         res = literal_eval(tokens[0])
-    except (SyntaxError, ValueError) as e:
-        raise ParseFatalException("Number incorrect: %s"%tokens[0])
+    except (SyntaxError, ValueError):
+        raise ParseFatalException("Number incorrect: %s" % tokens[0])
     return res
 
 
@@ -53,7 +53,7 @@ def convert_group(tokens):
     tok = tokens.asList()
     dic = dict(tok)
     if not (len(dic) == len(tok)):
-        raise ParseFatalException("Names in group must be unique: %s"%tokens)
+        raise ParseFatalException("Names in group must be unique: %s" % tokens)
     return ConfGroup(dic)
 
 
