@@ -77,8 +77,8 @@ class ConfArray(_ListType):
     """
     ConfArray represents a libconfig array.
 
-    Access works via [] operator:
-    >>> c = Config("my_array = [1,2,3];")
+    Access works via the [] operator:
+    >>> c = Config("my_array = [1, 2, 3];")
     >>> c.my_array[1]
     2
     """
@@ -101,8 +101,8 @@ class ConfList(_ListType):
     """
     ConfList represents a libconfig list.
 
-    Access works via [] operator:
-    >>> c = Config('my_list = (1.5,2L,0xee,"string");')
+    Access works via the [] operator:
+    >>> c = Config('my_list = (1.5, 2L, 0xee, "string");')
     >>> c.my_list[1]
     2L
     """
