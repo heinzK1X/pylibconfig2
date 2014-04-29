@@ -1,8 +1,8 @@
 pylibconfig2
 ============
 
-Pure python library for libconfig syntax. All libconfig features are resembled
-apart from handling files and include directives.
+Pure python library for libconfig syntax. IO works via strings only. Thus,
+include directives are not supported.
 
 
 Usage
@@ -26,6 +26,14 @@ The string representation is itself a readable as a config:
     5
     >>> str(c)
     'my_setting = 5;'
+
+These functions are given for convenience:
+
+    keys()
+    values()
+    items()
+    get(key, default)
+    set(key, value)
 
 
 An array
@@ -59,3 +67,11 @@ ConfGroup represents a libconfig group. Access works via attributes:
     >>> c = cfg.Config("my_group = {my_setting = 5;};")
     >>> c.my_group.my_setting
     5
+
+Again, these functions are given for convenience:
+
+    keys()
+    values()
+    items()
+    get(key, default)
+    set(key, value)

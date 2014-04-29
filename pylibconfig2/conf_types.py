@@ -121,11 +121,36 @@ class ConfGroup(object):
     >>> c = Config("my_group = {my_setting = 5;};")
     >>> c.my_group.my_setting
     5
+
+    These functions are forwarded for convenience:
+
+        keys()
+        values()
+        items()
+        get(key, default)
+        set(key, value)
     """
+
+    def get(self, key, default=None):
+        return self.__dict__.get(key, default)
+
+    def set(self, key, value):
+        return setattr(self, key, value)
+
+    def keys(self):
+        return self.__dict__.keys()
+
+    def values(self):
+        return self.__dict__.values()
+
+    def items(self):
+        return self.__dict__.items()
+
     def __init__(self, ini_dict=None):
         if type(ini_dict) == dict:
             for k, v in ini_dict.iteritems():
                 setattr(self, k, v)
+        self._dummy = False
 
     def __setattr__(self, key, val):
         self.__dict__[key] = _check_value(val)
@@ -169,6 +194,14 @@ class Config(ConfGroup):
     >>> c = Config("my_setting = 5;")
     >>> c.my_setting
     5
+
+    These functions are forwarded for convenience:
+
+        keys()
+        values()
+        items()
+        get(key, default)
+        set(key, value)
     """
     def __init__(self, string):
         res = config.parseString(string)[0]
