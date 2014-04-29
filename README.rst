@@ -17,17 +17,22 @@ automatically.
 The config
 ~~~~~~~~~~
 
-Config represents a libconfig configuration. Access works via attributes.
-The string representation is itself a readable as a config:
+Config represents a libconfig configuration. The string representation is itself
+readable as a config. Access works via attributes:
 
     >>> import pylibconfig2 as cfg
     >>> c = cfg.Config("my_setting = 5;")
-    >>> c.my_setting
-    5
     >>> str(c)
     'my_setting = 5;'
+    >>> c.my_setting
+    5
 
-These functions are given for convenience:
+Or via lookup as in the original libconfig way (no exceptions are raised):
+    >>> c = Config('my = {nested = {sett = (0, {ng = "rocks!"})}}')
+    >>> c.lookup('my.nested.sett.[1].ng')
+    'rocks!'
+
+These functions are given for further convenience:
 
     keys()
     values()
@@ -41,7 +46,6 @@ An array
 
 ConfArray represents a libconfig array. Access works via the [] operator:
 
-    >>> import pylibconfig2 as cfg
     >>> c = cfg.Config("my_array = [1, 2, 3];")
     >>> c.my_array[1]
     2
@@ -52,7 +56,6 @@ A list
 
 ConfList represents a libconfig list. Access works via the [] operator:
 
-    >>> import pylibconfig2 as cfg
     >>> c = cfg.Config('my_list = (1.5, 2L, 0xee, "string");')
     >>> c.my_list[1]
     2L
@@ -63,7 +66,6 @@ A group
 
 ConfGroup represents a libconfig group. Access works via attributes:
 
-    >>> import pylibconfig2 as cfg
     >>> c = cfg.Config("my_group = {my_setting = 5;};")
     >>> c.my_group.my_setting
     5

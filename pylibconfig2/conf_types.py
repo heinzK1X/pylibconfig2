@@ -6,17 +6,20 @@ Scalar python types are used. The libconfig types Array, List, Group are
 ConfArray and ConfList extend the python list type. ConfGroup uses __dict__ as
  its data storage.
 """
-
+import pyparsing as pp
 
 class ConfError(Exception):
     pass
 
-
 class _ListType(list):
     l_delim = ""
     r_delim = ""
+    array_index = (
+        pp.Suppress("[") + pp.Word(pp.nums) + pp.Suppress("]")
+    ).setParseAction(lambda t: int(t[0]))
 
     def __init__(self, ini_list=None):
+        super(_ListType, self).__init__()
         if ini_list:
             for k in ini_list:
                 self.append(k)
@@ -38,6 +41,15 @@ class _ListType(list):
         return super(_ListType, self).insert(
             index, self.check_value(p_object)
         )
+
+    def _lookup(self, keys):
+        k = self.array_index.parseString(keys.pop(0))[0]
+        if k and k < len(self):
+            val = self[k]
+            if not len(keys):
+                return val
+            if isinstance(val, (_ListType, ConfGroup)):
+                return val._lookup(keys)
 
     def __add__(self, y):
         raise ConfError("__add__ is not supported.")
@@ -146,6 +158,15 @@ class ConfGroup(object):
     def items(self):
         return self.__dict__.items()
 
+    def _lookup(self, keys):
+        k = keys.pop(0)
+        if k in self.__dict__:
+            val = self.__dict__[k]
+            if not len(keys):
+                return val
+            if isinstance(val, (_ListType, ConfGroup)):
+                return val._lookup(keys)
+
     def __init__(self, ini_dict=None):
         if type(ini_dict) == dict:
             for k, v in ini_dict.iteritems():
@@ -203,6 +224,13 @@ class Config(ConfGroup):
     >>> c.my_setting
     5
 
+    Or via lookup as in the original libconfig way (no exceptions..):
+    >>> c = Config('my = {nested = {sett = (0, {ng = "rocks!"})}}')
+    >>> c.lookup('my.nested.foo')
+    >>> c.lookup('my.nested.sett.[42]')
+    >>> c.lookup('my.nested.sett.[1].ng')
+    'rocks!'
+
     These functions are forwarded for convenience:
 
         keys()
@@ -211,6 +239,9 @@ class Config(ConfGroup):
         get(key, default)
         set(key, value)
     """
+    def lookup(self, key):
+        return self._lookup(key.split('.'))
+
     def __init__(self, string):
         res = config.parseString(string)[0]
         super(Config, self).__init__(res.__dict__)
