@@ -11,7 +11,7 @@ Usage
 Scalar types are pythons basic types str, int, long, float, bool. The libconfig
 types Array, List, Group are implemented as ConfArray, ConfList, ConfGroup,
 respectively. A config is setup from a string only, and represented as a string
- automatically.
+automatically.
 
 
 ### The config
