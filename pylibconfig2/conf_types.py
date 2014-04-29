@@ -1,4 +1,11 @@
-#TODO: license here?
+"""
+The types of libconfig.
+
+Scalar python types are used. The libconfig types Array, List, Group are
+ implemented as ConfArray, ConfList, ConfGroup, respectively.
+ConfArray and ConfList extend the python list type. ConfGroup uses __dict__ as
+ its data storage.
+"""
 
 
 class ConfError(Exception):
@@ -67,6 +74,14 @@ class _ListType(list):
 
 
 class ConfArray(_ListType):
+    """
+    ConfArray represents a libconfig array.
+
+    Access works via [] operator:
+    >>> c = Config("my_array = [1,2,3];")
+    >>> c.my_array[1]
+    2
+    """
     l_delim = "["
     r_delim = "]"
 
@@ -83,6 +98,14 @@ class ConfArray(_ListType):
 
 
 class ConfList(_ListType):
+    """
+    ConfList represents a libconfig list.
+
+    Access works via [] operator:
+    >>> c = Config('my_list = (1.5,2L,0xee,"string");')
+    >>> c.my_list[1]
+    2L
+    """
     l_delim = "("
     r_delim = ")"
 
@@ -91,6 +114,14 @@ class ConfList(_ListType):
 
 
 class ConfGroup(object):
+    """
+    ConfGroup represents a libconfig group.
+
+    Access works via attributes:
+    >>> c = Config("my_group = {my_setting = 5;};")
+    >>> c.my_group.my_setting
+    5
+    """
     def __init__(self, ini_dict=None):
         if type(ini_dict) == dict:
             for k, v in ini_dict.iteritems():
@@ -131,6 +162,14 @@ def _format_string(obj):
 
 from parsing import config
 class Config(ConfGroup):
+    """
+    Config represents a libconfig configuration.
+
+    Access works via attributes:
+    >>> c = Config("my_setting = 5;")
+    >>> c.my_setting
+    5
+    """
     def __init__(self, string):
         res = config.parseString(string)[0]
         super(Config, self).__init__(res.__dict__)

@@ -37,6 +37,7 @@ def convert_num(tokens):
 
 
 class ListGroup(Group):
+    """Converts Group from list to ConfList type."""
     def postParse(self, instring, loc, tokenlist ):
         try:
             return [ConfList(tokenlist.asList())]
@@ -45,6 +46,7 @@ class ListGroup(Group):
 
 
 class ArrayGroup(Group):
+    """Converts Group from list to ConfArray type."""
     def postParse(self, instring, loc, tokenlist ):
         try:
             return [ConfArray(tokenlist.asList())]
@@ -53,6 +55,7 @@ class ArrayGroup(Group):
 
 
 def convert_group(tokens):
+    """Converts parseResult from to ConfGroup type."""
     tok = tokens.asList()
     dic = dict(tok)
     if not (len(dic) == len(tok)):
