@@ -150,10 +150,9 @@ class ConfGroup(object):
         if type(ini_dict) == dict:
             for k, v in ini_dict.iteritems():
                 setattr(self, k, v)
-        self._dummy = False
 
     def __setattr__(self, key, val):
-        self.__dict__[key] = _check_value(val)
+        self.__dict__[_check_name(key)] = _check_value(val)
 
     def __repr__(self):
         return "{\n  " + "\n  ".join(
@@ -176,6 +175,15 @@ def _check_value(val):
     if not type(val) in _all_types:
         raise ConfError("Type not supported: %s, %s" % (type(val), val))
     return val
+
+
+from parsing import ParseException, name
+def _check_name(key):
+    try:
+        name.parseString(key)
+    except ParseException:
+        raise ConfError("Name not valid: %s" % key)
+    return key
 
 
 def _format_string(obj):
