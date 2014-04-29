@@ -14,7 +14,8 @@ respectively. A config is setup from a string only, and represented as a string
 automatically.
 
 
-### The config
+The config
+~~~~~~~~~~
 
 Config represents a libconfig configuration. Access works via attributes.
 The string representation is itself a readable as a config:
@@ -27,7 +28,8 @@ The string representation is itself a readable as a config:
     'my_setting = 5;'
 
 
-### An array
+An array
+~~~~~~~~
 
 ConfArray represents a libconfig array. Access works via the [] operator:
 
@@ -37,7 +39,8 @@ ConfArray represents a libconfig array. Access works via the [] operator:
     2
 
 
-### A list
+A list
+~~~~~~
 
 ConfList represents a libconfig list. Access works via the [] operator:
 
@@ -47,7 +50,8 @@ ConfList represents a libconfig list. Access works via the [] operator:
     2L
 
 
-### A group
+A group
+~~~~~~~
 
 ConfGroup represents a libconfig group. Access works via attributes:
 
