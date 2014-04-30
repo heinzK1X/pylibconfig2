@@ -230,6 +230,8 @@ class Config(ConfGroup):
     >>> c.lookup('my.nested.sett.[42]')
     >>> c.lookup('my.nested.sett.[1].ng')
     'rocks!'
+    >>> c.lookup('my.nested.foo', 'bar')
+    'bar'
 
     These functions are forwarded for convenience:
 
@@ -239,8 +241,9 @@ class Config(ConfGroup):
         get(key, default)
         set(key, value)
     """
-    def lookup(self, key):
-        return self._lookup(key.split('.'))
+    def lookup(self, key, default=None):
+        res = self._lookup(key.split('.'))
+        return res if res else default
 
     def __init__(self, string):
         res = config.parseString(string)[0]

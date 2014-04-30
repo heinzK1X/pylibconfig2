@@ -32,6 +32,8 @@ Or via lookup as in the original libconfig way (no exceptions are raised):
     >>> c = Config('my = {nested = {sett = (0, {ng = "rocks!"})}}')
     >>> c.lookup('my.nested.sett.[1].ng')
     'rocks!'
+    >>> c.lookup('my.nested.foo', 'bar')
+    'bar'
 
 These functions are given for further convenience:
 
