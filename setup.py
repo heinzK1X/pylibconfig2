@@ -11,6 +11,7 @@ setup(
     url="https://github.com/heinzK1X/pylibconfig2",
     keywords="libconfig libconfig++ pylibconfig2 pylibconfig config",
     packages=['pylibconfig2', ],
+    requires=['pyparsing'],
     license='GPLv3',
     long_description=open('README.rst').read(),
     test_suite="pylibconfig2.test.test.suite",
