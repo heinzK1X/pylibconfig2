@@ -4,7 +4,7 @@ Knowledge on pyparsing and libconfig required =)
 """
 
 from pyparsing import alphas, alphanums, cppStyleComment, Combine, Group, \
-    Forward, hexnums, ParseException, ParseFatalException, pythonStyleComment, \
+    Forward, hexnums, nums, ParseException, ParseFatalException, pythonStyleComment, \
     oneOf, OneOrMore, Optional, QuotedString, Suppress, Word, ZeroOrMore, \
     stringStart, stringEnd
 from conf_types import ConfArray, ConfError, ConfGroup, ConfList
@@ -66,7 +66,7 @@ def convert_group(tokens):
 val_bool = Word("TRUEFALStruefals")\
     .setParseAction(convert_bool)
 val_num = Combine(
-    Optional(oneOf("+ -")) + Optional("0x") + Word(hexnums + ".eEL"))\
+    Optional(oneOf("+ -")) + Optional("0x") + Word(hexnums + ".eEL" + "-" + nums) )\
     .setParseAction(convert_num)
 val_str = OneOrMore(QuotedString('"', escChar='\\'))\
     .setParseAction(lambda t: "".join(t))
