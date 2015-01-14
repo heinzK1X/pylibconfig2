@@ -53,6 +53,14 @@ class _ListType(list):
                 return val
             if isinstance(val, (_ListType, ConfGroup)):
                 return val._lookup(keys)
+                
+    def _setup(self, keys, value):
+        k = self.array_index.parseString(keys.pop(0))[0]
+        if type(k) == int and k >= 0 and k < len(self):
+            if not len(keys):
+                self[k] = value
+            elif isinstance(self[k], (_ListType, ConfGroup)):
+                return self[k]._setup(keys, value)
 
     def __add__(self, y):
         raise ConfError("__add__ is not supported.")
@@ -169,6 +177,14 @@ class ConfGroup(object):
                 return val
             if isinstance(val, (_ListType, ConfGroup)):
                 return val._lookup(keys)
+                
+    def _setup(self, keys, value):
+        k = keys.pop(0)
+        if k in self.__dict__:
+            if not len(keys):
+                self.__dict__[k] = value
+            elif isinstance(self.__dict__[k], (_ListType, ConfGroup)):
+                return self.__dict__[k]._setup(keys, value)
 
     def __init__(self, ini_dict=None):
         if type(ini_dict) == dict:
@@ -246,6 +262,9 @@ class Config(ConfGroup):
     def lookup(self, key, default=None):
         res = self._lookup(key.split('.'))
         return res if res else default
+        
+    def setup(self, key, value):
+        self._setup(key.split('.'), value)
 
     def __init__(self, string):
         res = config.parseString(string)[0]
