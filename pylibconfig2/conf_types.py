@@ -44,7 +44,7 @@ class _ListType(list):
 
     def _lookup(self, keys):
         k = self.array_index.parseString(keys.pop(0))[0]
-        if k < len(self):
+        if type(k) == int and k >= 0 and k < len(self):
             val = self[k]
             if not len(keys):
                 return val
