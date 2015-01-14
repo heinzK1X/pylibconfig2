@@ -12,7 +12,7 @@ from ast import literal_eval
 
 assign = Suppress(oneOf(": ="))
 delim = Suppress(Optional(";"))
-lpar, rpar, lbrk, rbrk, lbrc, rbrc, comma = map(Suppress, "()[]{},")
+lpar, rpar, lbrk, rbrk, lbrc, rbrc, comma = list(map(Suppress, "()[]{},"))
 
 name = Word(alphas+"*", alphanums+"-_*")("name")
 value = Forward()

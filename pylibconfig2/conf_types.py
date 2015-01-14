@@ -153,13 +153,13 @@ class ConfGroup(object):
         return setattr(self, key, value)
 
     def keys(self):
-        return self.__dict__.keys()
+        return list(self.__dict__.keys())
 
     def values(self):
-        return self.__dict__.values()
+        return list(self.__dict__.values())
 
     def items(self):
-        return self.__dict__.items()
+        return list(self.__dict__.items())
 
     def _lookup(self, keys):
         k = keys.pop(0)
@@ -172,7 +172,7 @@ class ConfGroup(object):
 
     def __init__(self, ini_dict=None):
         if type(ini_dict) == dict:
-            for k, v in ini_dict.iteritems():
+            for k, v in ini_dict.items():
                 setattr(self, k, v)
 
     def __setattr__(self, key, val):
@@ -181,10 +181,10 @@ class ConfGroup(object):
     def __repr__(self):
         return "{\n  " + "\n  ".join(
             "%s = %s;" % (k, _format_string(v))
-            for k, v in self.__dict__.iteritems()
+            for k, v in self.__dict__.items()
         ) + "\n}"
 
-_scalar_types = str, int, long, float, bool
+_scalar_types = str, int, int, float, bool
 _all_types = _scalar_types + (ConfGroup, ConfList, ConfArray)
 
 
@@ -254,5 +254,5 @@ class Config(ConfGroup):
     def __repr__(self):
         return "\n".join(
             "%s = %s;" % (k, _format_string(v))
-            for k, v in self.__dict__.iteritems()
+            for k, v in self.__dict__.items()
         ).replace("\n  ", "\n")  # fix wrong indentation for grouped types
