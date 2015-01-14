@@ -7,6 +7,9 @@ ConfArray and ConfList extend the python list type. ConfGroup uses __dict__ as
  its data storage.
 """
 import pyparsing as pp
+import sys
+if sys.version > '3':
+    long = int
 
 class ConfError(Exception):
     pass
@@ -181,7 +184,6 @@ class ConfGroup(object):
             for k, v in self.__dict__.iteritems()
         ) + "\n}"
 
-
 _scalar_types = str, int, long, float, bool
 _all_types = _scalar_types + (ConfGroup, ConfList, ConfArray)
 
@@ -198,7 +200,7 @@ def _check_value(val):
     return val
 
 
-from parsing import ParseException, name
+from pylibconfig2.parsing import ParseException, name
 def _check_name(key):
     try:
         name.parseString(key)
@@ -214,7 +216,7 @@ def _format_string(obj):
         return repr(obj).replace("\n", "\n  ")
 
 
-from parsing import config
+from pylibconfig2.parsing import config
 class Config(ConfGroup):
     """
     Config represents a libconfig configuration.

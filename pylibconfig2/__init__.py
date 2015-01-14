@@ -1,10 +1,10 @@
-from conf_types import \
+from pylibconfig2.conf_types import \
     Config, \
     ConfError, \
     ConfGroup, \
     ConfList, \
     ConfArray
-from parsing import \
+from pylibconfig2.parsing import \
     ParseException, \
     ParseFatalException
 

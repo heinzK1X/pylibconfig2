@@ -7,7 +7,7 @@ from pyparsing import alphas, alphanums, cppStyleComment, Combine, Group, \
     Forward, hexnums, ParseException, ParseFatalException, pythonStyleComment, \
     oneOf, OneOrMore, Optional, QuotedString, Suppress, Word, ZeroOrMore, \
     stringStart, stringEnd
-from conf_types import ConfArray, ConfError, ConfGroup, ConfList
+from pylibconfig2.conf_types import ConfArray, ConfError, ConfGroup, ConfList
 from ast import literal_eval
 
 assign = Suppress(oneOf(": ="))
