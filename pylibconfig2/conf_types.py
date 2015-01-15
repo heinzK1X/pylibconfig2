@@ -7,6 +7,9 @@ ConfArray and ConfList extend the python list type. ConfGroup uses __dict__ as
  its data storage.
 """
 import pyparsing as pp
+import sys
+if sys.version > '3':
+    long = int
 
 class ConfError(Exception):
     pass
@@ -50,6 +53,14 @@ class _ListType(list):
                 return val
             if isinstance(val, (_ListType, ConfGroup)):
                 return val._lookup(keys)
+                
+    def _setup(self, keys, value):
+        k = self.array_index.parseString(keys.pop(0))[0]
+        if type(k) == int and k >= 0 and k < len(self):
+            if not len(keys):
+                self[k] = value
+            elif isinstance(self[k], (_ListType, ConfGroup)):
+                return self[k]._setup(keys, value)
 
     def __add__(self, y):
         raise ConfError("__add__ is not supported.")
@@ -150,13 +161,13 @@ class ConfGroup(object):
         return setattr(self, key, value)
 
     def keys(self):
-        return self.__dict__.keys()
+        return list(self.__dict__.keys())
 
     def values(self):
-        return self.__dict__.values()
+        return list(self.__dict__.values())
 
     def items(self):
-        return self.__dict__.items()
+        return list(self.__dict__.items())
 
     def _lookup(self, keys):
         k = keys.pop(0)
@@ -166,10 +177,18 @@ class ConfGroup(object):
                 return val
             if isinstance(val, (_ListType, ConfGroup)):
                 return val._lookup(keys)
+                
+    def _setup(self, keys, value):
+        k = keys.pop(0)
+        if k in self.__dict__:
+            if not len(keys):
+                self.__dict__[k] = value
+            elif isinstance(self.__dict__[k], (_ListType, ConfGroup)):
+                return self.__dict__[k]._setup(keys, value)
 
     def __init__(self, ini_dict=None):
         if type(ini_dict) == dict:
-            for k, v in ini_dict.iteritems():
+            for k, v in ini_dict.items():
                 setattr(self, k, v)
 
     def __setattr__(self, key, val):
@@ -178,11 +197,10 @@ class ConfGroup(object):
     def __repr__(self):
         return "{\n  " + "\n  ".join(
             "%s = %s;" % (k, _format_string(v))
-            for k, v in self.__dict__.iteritems()
+            for k, v in self.__dict__.items()
         ) + "\n}"
 
-
-_scalar_types = str, int, long, float, bool
+_scalar_types = str, int, int, float, bool
 _all_types = _scalar_types + (ConfGroup, ConfList, ConfArray)
 
 
@@ -198,7 +216,7 @@ def _check_value(val):
     return val
 
 
-from parsing import ParseException, name
+from pylibconfig2.parsing import ParseException, name
 def _check_name(key):
     try:
         name.parseString(key)
@@ -214,7 +232,7 @@ def _format_string(obj):
         return repr(obj).replace("\n", "\n  ")
 
 
-from parsing import config
+from pylibconfig2.parsing import config
 class Config(ConfGroup):
     """
     Config represents a libconfig configuration.
@@ -244,6 +262,9 @@ class Config(ConfGroup):
     def lookup(self, key, default=None):
         res = self._lookup(key.split('.'))
         return res if res else default
+        
+    def setup(self, key, value):
+        self._setup(key.split('.'), value)
 
     def __init__(self, string):
         res = config.parseString(string)[0]
@@ -252,5 +273,5 @@ class Config(ConfGroup):
     def __repr__(self):
         return "\n".join(
             "%s = %s;" % (k, _format_string(v))
-            for k, v in self.__dict__.iteritems()
+            for k, v in self.__dict__.items()
         ).replace("\n  ", "\n")  # fix wrong indentation for grouped types
