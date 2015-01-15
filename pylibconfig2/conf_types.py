@@ -11,8 +11,10 @@ import sys
 if sys.version > '3':
     long = int
 
+
 class ConfError(Exception):
     pass
+
 
 class _ListType(list):
     l_delim = ""
@@ -58,9 +60,11 @@ class _ListType(list):
         k = self.array_index.parseString(keys.pop(0))[0]
         if type(k) == int and k >= 0 and k < len(self):
             if not len(keys):
-                self[k] = value
+                self[k] = self.check_value(value)
+                return True
             elif isinstance(self[k], (_ListType, ConfGroup)):
                 return self[k]._setup(keys, value)
+        return False
 
     def __add__(self, y):
         raise ConfError("__add__ is not supported.")
@@ -180,11 +184,12 @@ class ConfGroup(object):
                 
     def _setup(self, keys, value):
         k = keys.pop(0)
-        if k in self.__dict__:
-            if not len(keys):
-                self.__dict__[k] = value
-            elif isinstance(self.__dict__[k], (_ListType, ConfGroup)):
-                return self.__dict__[k]._setup(keys, value)
+        if not len(keys):
+            self.__dict__[k] = value
+            return True
+        elif isinstance(self.__dict__.get(k), (_ListType, ConfGroup)):
+            return self.__dict__[k]._setup(keys, value)
+        return False
 
     def __init__(self, ini_dict=None):
         if type(ini_dict) == dict:
@@ -200,27 +205,28 @@ class ConfGroup(object):
             for k, v in self.__dict__.items()
         ) + "\n}"
 
-_scalar_types = str, int, int, float, bool
+_scalar_types = str, int, long, float, bool
 _all_types = _scalar_types + (ConfGroup, ConfList, ConfArray)
 
 
 def _check_scalar_value(val):
     if not type(val) in _scalar_types:
-        raise ConfError("Type not supported: %s, %s" % (type(val), val))
+        raise ConfError("Type not supported: %s, %s, allowed types: %s"
+                        % (type(val), val, _scalar_types))
     return val
 
 
 def _check_value(val):
     if not type(val) in _all_types:
-        raise ConfError("Type not supported: %s, %s" % (type(val), val))
+        raise ConfError("Type not supported: %s, %s, allowed types: %s"
+                        % (type(val), val, _all_types))
     return val
 
 
-from pylibconfig2.parsing import ParseException, name
 def _check_name(key):
     try:
-        name.parseString(key)
-    except ParseException:
+        parsing.name.parseString(key)
+    except parsing.ParseException:
         raise ConfError("Name not valid: %s" % key)
     return key
 
@@ -232,7 +238,7 @@ def _format_string(obj):
         return repr(obj).replace("\n", "\n  ")
 
 
-from pylibconfig2.parsing import config
+from pylibconfig2 import parsing
 class Config(ConfGroup):
     """
     Config represents a libconfig configuration.
@@ -251,6 +257,17 @@ class Config(ConfGroup):
     >>> c.lookup('my.nested.foo', 'bar')
     'bar'
 
+    Setting values should be done by path:
+    >>> c = Config('')
+    >>> c.setup('foo', 1)
+    True
+    >>> c.setup('bar', '{hello = "world"}')
+    True
+    >>> c.lookup('bar.hello')
+    'world'
+    >>> c.setup('a.nonexisting.group', '"returns False!"')
+    False
+
     These functions are forwarded for convenience:
 
         keys()
@@ -264,10 +281,11 @@ class Config(ConfGroup):
         return res if res else default
         
     def setup(self, key, value):
-        self._setup(key.split('.'), value)
+        value = parsing.value.parseString(str(value))[0]
+        return self._setup(key.split('.'), value)
 
     def __init__(self, string):
-        res = config.parseString(string)[0]
+        res = parsing.config.parseString(string)[0]
         super(Config, self).__init__(res.__dict__)
 
     def __repr__(self):

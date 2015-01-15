@@ -35,6 +35,17 @@ Or via lookup as in the original libconfig way (no exceptions are raised):
     >>> c.lookup('my.nested.foo', 'bar')
     'bar'
 
+Setting values should be done by path (but attribution is also possible):
+    >>> c = Config('')
+    >>> c.setup('foo', 1)
+    True
+    >>> c.setup('bar', '{hello = "world"}')
+    True
+    >>> c.lookup('bar.hello')
+    'world'
+    >>> c.setup('a.nonexisting.group', '"returns False!"')
+    False
+
 These functions are given for further convenience:
 
     keys()
