@@ -7,12 +7,12 @@ from pyparsing import alphas, alphanums, cppStyleComment, Combine, Group, \
     Forward, hexnums, ParseException, ParseFatalException, pythonStyleComment, \
     oneOf, OneOrMore, Optional, QuotedString, Suppress, Word, ZeroOrMore, \
     stringStart, stringEnd
-from conf_types import ConfArray, ConfError, ConfGroup, ConfList
+from pylibconfig2.conf_types import ConfArray, ConfError, ConfGroup, ConfList
 from ast import literal_eval
 
 assign = Suppress(oneOf(": ="))
 delim = Suppress(Optional(";"))
-lpar, rpar, lbrk, rbrk, lbrc, rbrc, comma = map(Suppress, "()[]{},")
+lpar, rpar, lbrk, rbrk, lbrc, rbrc, comma = list(map(Suppress, "()[]{},"))
 
 name = Word(alphas+"*", alphanums+"-_*")("name")
 value = Forward()
