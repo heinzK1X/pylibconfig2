@@ -33,7 +33,7 @@ inp_2 = """
 // File with extraneous whitespace.
 
     foo = 1;
-
+toto = true;
 
 
 	bar
@@ -53,6 +53,7 @@ outp_2 = """
 foo = 1;
 bar = "Hello, world!";
 baz = 2;
+toto= true;
 """
 
 inp_3 = """
@@ -73,7 +74,7 @@ inp_4 = """
 // Last line has whitespace but no trailing newline.
 
 foo = 1;
-
+toto= false;
 
 bar = 2;
 
@@ -81,6 +82,7 @@ bar = 2;
 outp_4 = """
 foo = 1;
 bar = 2;
+toto = false;
 """
 
 

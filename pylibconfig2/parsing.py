@@ -63,14 +63,14 @@ def convert_group(tokens):
     return ConfGroup(dic)
 
 # scalar values
-val_bool = Word("TRUEFALStruefals")\
+val_bool = Word("TRUEFALSEtruefalse")\
     .setParseAction(convert_bool)
+val_str = OneOrMore(QuotedString('"', escChar='\\'))\
+    .setParseAction(lambda t: "".join(t))
 val_num = Combine(
     Optional(oneOf("+ -")) + Optional("0x") + Word(hexnums + ".eEL" + "+-") )\
     .setParseAction(convert_num)
-val_str = OneOrMore(QuotedString('"', escChar='\\'))\
-    .setParseAction(lambda t: "".join(t))
-val_scalar = (val_str | val_num | val_bool)
+val_scalar = val_bool | (val_str | val_num)
 
 # container values
 val_array = ArrayGroup(
