@@ -63,7 +63,7 @@ def convert_group(tokens):
     return ConfGroup(dic)
 
 # scalar values
-val_bool = Word("TRUEFALSEtruefalse")\
+val_bool = Word("TRUEFALStruefals")\
     .setParseAction(convert_bool)
 val_str = OneOrMore(QuotedString('"', escChar='\\'))\
     .setParseAction(lambda t: "".join(t))
