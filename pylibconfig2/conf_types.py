@@ -284,7 +284,45 @@ class Config(ConfGroup):
         value = parsing.value.parseString(str(value))[0]
         return self._setup(key.split('.'), value)
 
-    def __init__(self, string):
+    @staticmethod
+    def expand_include(filename):
+        """
+        Expand the content of a file into a string.
+
+        If @include directives are found in the config, they are expanded by
+        this function. In case recursion is detected or a RunTimeError is
+        thrown, ``None`` is returned.
+        """
+        def _expand_include_rec(filename):
+            for line in open(filename):
+                line_stripped = line.strip().replace("//", "#")
+                if line_stripped.startswith('@include '):
+                    include_to_clean = line_stripped.split(None, 1)[1]
+                    include_filename = include_to_clean.replace('"'," ").strip()
+                    for included_line in _expand_include_rec(include_filename):
+                        yield included_line
+                else:
+                    yield line
+        try:
+            lines = []
+            for line in _expand_include_rec(filename):
+                lines.append(line)
+            return ''.join(lines)
+        except RuntimeError:
+            return None
+
+    def read_string(self, string):
+        self.__init__(string)
+        
+    def read_file(self, filename):
+        string = Config.expand_include(filename)
+        if string is None:
+            raise ConfError(
+                "Recursion of @include detected"
+            )
+        self.read_string(string)
+
+    def __init__(self, string=''):
         res = parsing.config.parseString(string)[0]
         super(Config, self).__init__(res.__dict__)
 
