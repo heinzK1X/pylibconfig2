@@ -162,24 +162,24 @@ class Test(unittest.TestCase):
             cfg.Config().__dict__
         )
         
-    def test_readString(self):
+    def test_read_string(self):
         cfg1 = cfg.Config(inp_4)
         cfg2 = cfg.Config()
-        cfg2.readString(outp_4)
+        cfg2.read_string(outp_4)
         self.assertDictEqual(
             cfg1.__dict__,
             cfg2.__dict__
         )
         
     
-    def test_readFile_simple_no_include(self):
+    def test_read_file_simple_no_include(self):
         temp = tempfile.NamedTemporaryFile()
         try:
             cfg1 = cfg.Config(inp_4)
             temp.write(outp_4)
-            temp.flush();
+            temp.flush()
             cfg2 = cfg.Config()
-            cfg2.readFile(temp.name)
+            cfg2.read_file(temp.name)
             self.assertDictEqual(
                 cfg1.__dict__,
                 cfg2.__dict__
@@ -187,18 +187,18 @@ class Test(unittest.TestCase):
         finally:
             temp.close()
 
-    def test_readFile_include(self):
+    def test_read_file_include(self):
         temp1 = tempfile.NamedTemporaryFile()
         temp2 = tempfile.NamedTemporaryFile()
         try:
             cfg1 = cfg.Config(outp_5)
             temp1.write('@include "' + temp2.name + '"')
             temp1.write(intp_5)
-            temp1.flush();
+            temp1.flush()
             temp2.write(intp_6)
             temp2.flush()
             cfg2 = cfg.Config()
-            cfg2.readFile(temp1.name)
+            cfg2.read_file(temp1.name)
             cfg3 = cfg.Config(outp_6)
             self.assertDictEqual(
                 cfg1.__dict__,
@@ -218,7 +218,7 @@ class Test(unittest.TestCase):
         try:
             temp1.write('@include "' + temp2.name + '"')
             temp1.write(intp_5)
-            temp1.flush();
+            temp1.flush()
             temp2.write('@include "' + temp1.name + '"')
             temp2.write(intp_6)
             temp2.flush()

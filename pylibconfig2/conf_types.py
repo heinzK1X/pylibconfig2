@@ -286,11 +286,12 @@ class Config(ConfGroup):
 
     @staticmethod
     def expand_include(filename):
-        """Expand the content of a file into a string
-        If @include directive are found also expand included file
-        In case recursion is detected or any RunTimeError is detected,
-        for example mutal inclusion of files:
-        the return value shall be None.
+        """
+        Expand the content of a file into a string.
+
+        If @include directives are found in the config, they are expanded by
+        this function. In case recursion is detected or a RunTimeError is
+        thrown, ``None`` is returned.
         """
         def _expand_include_rec(filename):
             for line in open(filename):
@@ -310,16 +311,16 @@ class Config(ConfGroup):
         except RuntimeError:
             return None
 
-    def readString(self, string):
+    def read_string(self, string):
         self.__init__(string)
         
-    def readFile(self, filename):
+    def read_file(self, filename):
         string = Config.expand_include(filename)
         if string is None:
             raise ConfError(
-                "Recursion of include detected"
+                "Recursion of @include detected"
             )
-        self.readString(string)
+        self.read_string(string)
 
     def __init__(self, string=''):
         res = parsing.config.parseString(string)[0]
