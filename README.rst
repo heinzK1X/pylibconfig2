@@ -1,8 +1,8 @@
 pylibconfig2
 ============
 
-Pure python library for libconfig syntax. IO works via strings only. Thus,
-include directives are not supported.
+Pure python library for libconfig syntax. IO works via strings, and include 
+directives.
 
 
 Usage
