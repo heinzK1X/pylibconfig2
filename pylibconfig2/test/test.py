@@ -112,6 +112,9 @@ titi = true;
 
 ################################################################### testing ###
 class Test(unittest.TestCase):
+
+
+
     def test_bad_input_0(self):
         self.assertRaises(
             cfg.ParseException,
@@ -176,7 +179,7 @@ class Test(unittest.TestCase):
         temp = tempfile.NamedTemporaryFile()
         try:
             cfg1 = cfg.Config(inp_4)
-            temp.write(outp_4)
+            temp.write(outp_4.encode("UTF-8"))
             temp.flush()
             cfg2 = cfg.Config()
             cfg2.read_file(temp.name)
@@ -190,12 +193,13 @@ class Test(unittest.TestCase):
     def test_read_file_include(self):
         temp1 = tempfile.NamedTemporaryFile()
         temp2 = tempfile.NamedTemporaryFile()
+        inc1 = '@include "' + temp2.name + '"'
         try:
             cfg1 = cfg.Config(outp_5)
-            temp1.write('@include "' + temp2.name + '"')
-            temp1.write(intp_5)
+            temp1.write(inc1.encode("UTF-8"))
+            temp1.write(intp_5.encode("UTF-8"))
             temp1.flush()
-            temp2.write(intp_6)
+            temp2.write(intp_6.encode("UTF-8"))
             temp2.flush()
             cfg2 = cfg.Config()
             cfg2.read_file(temp1.name)
@@ -215,12 +219,14 @@ class Test(unittest.TestCase):
     def test_expand_include_with_bad_recursion(self):
         temp1 = tempfile.NamedTemporaryFile()
         temp2 = tempfile.NamedTemporaryFile()
+        inc2 = '@include "' + temp2.name + '"'
+        inc3 = '@include "' + temp1.name + '"'
         try:
-            temp1.write('@include "' + temp2.name + '"')
-            temp1.write(intp_5)
+            temp1.write(inc2.encode("UTF-8")) 
+            temp1.write(intp_5.encode("UTF-8"))
             temp1.flush()
-            temp2.write('@include "' + temp1.name + '"')
-            temp2.write(intp_6)
+            temp2.write(inc3.encode("UTF-8"))
+            temp2.write(intp_6.encode("UTF-8"))
             temp2.flush()
             string1 = cfg.Config.expand_include(temp1.name)
             string2 = cfg.Config.expand_include(temp2.name)

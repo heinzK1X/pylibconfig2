@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 The types of libconfig.
 
@@ -108,7 +110,7 @@ class ConfArray(_ListType):
     >>> c = Config("my_array = [1, 2, 3];")
     >>> c.my_array[1]
     2
-    """
+    """.encode("utf-8")
     l_delim = "["
     r_delim = "]"
 
@@ -132,7 +134,7 @@ class ConfList(_ListType):
     >>> c = Config('my_list = (1.5, 2L, 0xee, "string");')
     >>> c.my_list[1]
     2L
-    """
+    """.encode("utf-8")
     l_delim = "("
     r_delim = ")"
 
@@ -294,15 +296,17 @@ class Config(ConfGroup):
         thrown, ``None`` is returned.
         """
         def _expand_include_rec(filename):
-            for line in open(filename):
-                line_stripped = line.strip().replace("//", "#")
-                if line_stripped.startswith('@include '):
-                    include_to_clean = line_stripped.split(None, 1)[1]
-                    include_filename = include_to_clean.replace('"'," ").strip()
-                    for included_line in _expand_include_rec(include_filename):
-                        yield included_line
-                else:
-                    yield line
+            
+            with open(filename) as open_file:
+                for line in open_file:
+                    line_stripped = line.strip().replace("//", "#")
+                    if line_stripped.startswith('@include '):
+                        include_to_clean = line_stripped.split(None, 1)[1]
+                        include_filename = include_to_clean.replace('"'," ").strip()
+                        for included_line in _expand_include_rec(include_filename):
+                            yield included_line
+                    else:
+                        yield line
         try:
             lines = []
             for line in _expand_include_rec(filename):
