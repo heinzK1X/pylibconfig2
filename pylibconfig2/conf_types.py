@@ -280,7 +280,7 @@ class Config(ConfGroup):
     """
     def lookup(self, key, default=None):
         res = self._lookup(key.split('.'))
-        return res if res else default
+        return res if res != None else default
         
     def setup(self, key, value):
         value = parsing.value.parseString(str(value))[0]

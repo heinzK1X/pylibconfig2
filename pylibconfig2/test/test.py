@@ -90,12 +90,6 @@ intp_5 = """
 foo = 1;
 toto = false;
 """
-
-intp_6 = """
-bar = 2;
-titi = true;
-"""
-
 outp_5 = """
 bar = 2;
 titi = true;
@@ -103,12 +97,25 @@ foo = 1;
 toto = false;
 """
 
+intp_6 = """
+bar = 2;
+titi = true;
+"""
 outp_6 = """
 foo = 1;
 toto = false;
 bar = 2;
 titi = true;
 """
+
+inp_7 = """
+my_group =
+{
+    bool_false = false
+    bool_true = true
+}
+"""
+
 
 ################################################################### testing ###
 class Test(unittest.TestCase):
@@ -173,8 +180,7 @@ class Test(unittest.TestCase):
             cfg1.__dict__,
             cfg2.__dict__
         )
-        
-    
+
     def test_read_file_simple_no_include(self):
         temp = tempfile.NamedTemporaryFile()
         try:
@@ -235,6 +241,14 @@ class Test(unittest.TestCase):
         finally:
             temp1.close()
             temp2.close()
+
+    def test_bool_lookup(self):
+        c = cfg.Config(inp_7)
+        self.assertEqual(c.my_group.bool_true, True)
+        self.assertEqual(c.my_group.bool_false, False)
+        self.assertEqual(c.lookup('my_group.bool_true'), True)
+        self.assertEqual(c.lookup('my_group.bool_false'), False)
+
 
 suite = unittest.TestSuite((
     unittest.TestLoader().loadTestsFromTestCase(Test),
