@@ -5,7 +5,7 @@ from setuptools import setup
 setup(
     name='pylibconfig2',
     description="Pure python library for libconfig syntax.",
-    version='0.2.3',
+    version='0.2.4',
     author="Heiner Tholen",
     author_email="github@heinertholen.com",
     url="https://github.com/heinzK1X/pylibconfig2",
