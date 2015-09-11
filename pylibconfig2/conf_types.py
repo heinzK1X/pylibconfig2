@@ -301,9 +301,9 @@ class Config(ConfGroup):
                 for line in open_file:
                     line_stripped = line.strip().replace("//", "#")
                     if line_stripped.startswith('@include '):
-                        include_to_clean = line_stripped.split(None, 1)[1]
-                        include_filename = include_to_clean.replace('"'," ").strip()
-                        for included_line in _expand_include_rec(include_filename):
+                        inc_to_clean = line_stripped.split(None, 1)[1]
+                        inc_filename = inc_to_clean.replace('"'," ").strip()
+                        for included_line in _expand_include_rec(inc_filename):
                             yield included_line
                     else:
                         yield line
