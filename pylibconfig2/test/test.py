@@ -6,6 +6,7 @@ import tempfile
 import pylibconfig2 as cfg
 from pylibconfig2 import conf_types
 
+
 ################################################################ io strings ###
 bad_inp_0 = """
 x
