@@ -295,8 +295,15 @@ class Config(ConfGroup):
         this function. In case recursion is detected or a RunTimeError is
         thrown, ``None`` is returned.
         """
+        open_files = set()
+
         def _expand_include_rec(filename):
-            
+            if filename in open_files:
+                raise RuntimeError('Recursive include statement detected for '
+                                   'file: ' + filename)
+            else:
+                open_files.add(filename)
+
             with open(filename) as open_file:
                 for line in open_file:
                     line_stripped = line.strip().replace("//", "#")
@@ -307,6 +314,9 @@ class Config(ConfGroup):
                             yield included_line
                     else:
                         yield line
+
+            open_files.remove(filename)
+
         try:
             lines = []
             for line in _expand_include_rec(filename):
