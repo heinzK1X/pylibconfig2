@@ -1,9 +1,9 @@
-pylibconfig2
-============
-
-
 .. image:: https://travis-ci.org/heinzK1X/pylibconfig2.svg
     :target: https://travis-ci.org/heinzK1X/pylibconfig2
+
+
+pylibconfig2
+============
 
 
 Pure python library for libconfig syntax. IO works via strings, and include 
