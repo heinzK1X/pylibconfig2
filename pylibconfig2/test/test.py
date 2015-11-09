@@ -109,6 +109,8 @@ titi = true;
 """
 
 inp_7 = """
+// bool test
+
 my_group =
 {
     bool_false = false
@@ -116,6 +118,11 @@ my_group =
 }
 """
 
+inp_8 = """
+// testing separators in groups
+
+my_group = {val1 = "semicolon"; val2 = "comma", val3 = "nothing" val4 = "end"}
+"""
 
 ################################################################### testing ###
 class Test(unittest.TestCase):
@@ -165,7 +172,10 @@ class Test(unittest.TestCase):
             cfg.Config(inp_4).__dict__,
             cfg.Config(outp_4).__dict__
         )
-    
+
+    def test_input_8(self):
+        cfg.Config(inp_8)
+
     def test_empty(self):
         self.assertDictEqual(
             cfg.Config('').__dict__,

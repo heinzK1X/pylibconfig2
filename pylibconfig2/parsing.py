@@ -12,11 +12,13 @@ from ast import literal_eval
 
 assign = Suppress(oneOf(": ="))
 delim = Suppress(Optional(";"))
+delim_in_group = Suppress(Optional(oneOf("; ,")))
 lpar, rpar, lbrk, rbrk, lbrc, rbrc, comma = list(map(Suppress, "()[]{},"))
 
 name = Word(alphas+"*", alphanums+"-_*")("name")
 value = Forward()
 setting = Forward()
+setting_in_group = Forward()
 
 
 def convert_bool(tokens):
@@ -38,7 +40,7 @@ def convert_num(tokens):
 
 class ListGroup(Group):
     """Converts Group from list to ConfList type."""
-    def postParse(self, instring, loc, tokenlist ):
+    def postParse(self, instring, loc, tokenlist):
         try:
             return [ConfList(tokenlist.asList())]
         except ConfError as e:
@@ -61,6 +63,7 @@ def convert_group(tokens):
     if not (len(dic) == len(tok)):
         raise ParseFatalException("Names in group must be unique: %s" % tokens)
     return ConfGroup(dic)
+
 
 # scalar values
 val_bool = Word("TRUEFALStruefals")\
@@ -85,12 +88,13 @@ val_list = ListGroup(
 )
 val_group = (
     lbrc
-    + ZeroOrMore(setting).setParseAction(convert_group)
+    + ZeroOrMore(setting_in_group).setParseAction(convert_group)
     + rbrc
 )
 
 value << (val_group | val_list | val_array | val_scalar)("value")
 setting << Group(name + assign + value + delim)
+setting_in_group << Group(name + assign + value + delim_in_group)
 config = (stringStart + ZeroOrMore(setting) + stringEnd)\
     .ignore(cppStyleComment)\
     .ignore(pythonStyleComment)\
