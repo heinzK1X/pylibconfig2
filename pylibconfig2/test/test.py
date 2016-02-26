@@ -47,6 +47,8 @@ toto = true;
 baz = 2;
 
 
+ tutu = 123L
+ ;
 
 
 """
@@ -55,6 +57,7 @@ foo = 1;
 bar = "Hello, world!";
 baz = 2;
 toto= true;
+tutu= 123L;
 """
 
 inp_3 = """

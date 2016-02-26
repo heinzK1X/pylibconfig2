@@ -3,6 +3,7 @@ Parsing module of pylibconfig2.
 Knowledge on pyparsing and libconfig required =)
 """
 
+import sys
 from pyparsing import alphas, alphanums, cppStyleComment, Combine, Group, \
     Forward, hexnums, ParseException, ParseFatalException, pythonStyleComment, \
     oneOf, OneOrMore, Optional, QuotedString, Suppress, Word, ZeroOrMore, \
@@ -32,7 +33,11 @@ def convert_bool(tokens):
 
 def convert_num(tokens):
     try:
-        res = literal_eval(tokens[0])
+        if sys.version_info[0] < 3 or tokens[0][-1] != 'L':
+            res = literal_eval(tokens[0])
+        else:
+            ## Python3 does not support anymore L suffix for long integers
+            res = literal_eval(tokens[0][0:-2])
     except (SyntaxError, ValueError):
         raise ParseFatalException("Number incorrect: %s" % tokens[0])
     return res
