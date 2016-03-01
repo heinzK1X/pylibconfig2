@@ -32,10 +32,7 @@ def convert_bool(tokens):
 
 def convert_num(tokens):
     try:
-        if tokens[0][-1] != 'L':
-            res = literal_eval(tokens[0])
-        else:
-            res = literal_eval(tokens[0][0:-2])
+        res = literal_eval(tokens[0])
     except (SyntaxError, ValueError):
         raise ParseFatalException("Number incorrect: %s" % tokens[0])
     return res
