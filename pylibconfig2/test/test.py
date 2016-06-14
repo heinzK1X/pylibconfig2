@@ -48,6 +48,7 @@ baz = 2;
 
 
  tutu = 123L
+zerol = 0L
  ;
 
 
@@ -58,7 +59,21 @@ bar = "Hello, world!";
 baz = 2;
 toto= true;
 tutu= 123L;
+zerol = 0L
 """
+
+dict_2 = {
+    'foo': 1,
+    'bar': 'Hello, world!',
+    'baz': 2,
+    'toto': True,
+}
+if sys.version_info[0] < 3:
+    dict_2['tutu'] = eval('123L')
+    dict_2['zerol'] = eval('0L')
+else:
+    dict_2['tutu'] = 123
+    dict_2['zerol'] = 0
 
 inp_3 = """
 // File has no trailing newline.
@@ -162,6 +177,10 @@ class Test(unittest.TestCase):
         self.assertDictEqual(
             cfg.Config(inp_2).__dict__,
             cfg.Config(outp_2).__dict__
+        )
+        self.assertDictEqual(
+            cfg.Config(inp_2).__dict__,
+            dict_2
         )
 
     def test_input_3(self):

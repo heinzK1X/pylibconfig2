@@ -37,7 +37,7 @@ def convert_num(tokens):
             res = literal_eval(tokens[0])
         else:
             ## Python3 does not support anymore L suffix for long integers
-            res = literal_eval(tokens[0][0:-2])
+            res = literal_eval(tokens[0][:-1])
     except (SyntaxError, ValueError):
         raise ParseFatalException("Number incorrect: %s" % tokens[0])
     return res
